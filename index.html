@@ -29,7 +29,98 @@
   </header>
 
   <main>
-    <!-- SEÇÕES: cadastro, listagem, detalhes -->
+    <section id="cadastro" aria-labelledby="titulo-cadastro">
+      <h2 id="titulo-cadastro">Cadastrar atividade</h2>
+      <p>Campos marcados com * são obrigatórios.</p>
+
+      <form action="#" method="post">
+        <fieldset>
+          <legend>Dados da atividade</legend>
+
+          <p>
+            <label for="titulo">Título *</label><br>
+            <input type="text" id="titulo" name="titulo" required maxlength="100" placeholder="Ex.: Entrega do relatório de Química">
+          </p>
+
+          <p>
+            <label for="autor">Autor / Responsável *</label><br>
+            <input type="text" id="autor" name="autor" required placeholder="Ex.: Profa. Marina Souza">
+          </p>
+
+          <p>
+            <label for="categoria">Categoria *</label><br>
+            <select id="categoria" name="categoria" required>
+              <option value="">Selecione…</option>
+              <option value="prova">Prova</option>
+              <option value="trabalho">Trabalho</option>
+              <option value="estudo">Estudo</option>
+              <option value="evento">Evento escolar</option>
+              <option value="outro">Outro</option>
+            </select>
+          </p>
+
+          <p>
+            <label for="ano">Ano *</label><br>
+            <input type="number" id="ano" name="ano" min="2000" max="2100" value="2026" required>
+          </p>
+
+          <p>
+            <label for="prazo">Data e hora de entrega</label><br>
+            <input type="datetime-local" id="prazo" name="prazo">
+          </p>
+
+          <p>
+            <label for="formato">Formato</label><br>
+            <select id="formato" name="formato">
+              <option value="presencial">Presencial</option>
+              <option value="online">Online</option>
+              <option value="entrega-digital">Entrega digital</option>
+              <option value="entrega-impressa">Entrega impressa</option>
+            </select>
+          </p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Situação</legend>
+
+          <p>
+            <label for="status">Status *</label><br>
+            <select id="status" name="status" required>
+              <option value="pendente">Pendente</option>
+              <option value="andamento">Em andamento</option>
+              <option value="concluida">Concluída</option>
+            </select>
+          </p>
+
+          <p>Prioridade *</p>
+          <p>
+            <input type="radio" id="prioridade-baixa" name="prioridade" value="baixa">
+            <label for="prioridade-baixa">Baixa</label>
+            <input type="radio" id="prioridade-media" name="prioridade" value="media" checked>
+            <label for="prioridade-media">Média</label>
+            <input type="radio" id="prioridade-alta" name="prioridade" value="alta">
+            <label for="prioridade-alta">Alta</label>
+          </p>
+
+          <p>
+            <label for="descricao">Descrição</label><br>
+            <textarea id="descricao" name="descricao" rows="4" cols="40" placeholder="Detalhes, materiais, observações…"></textarea>
+          </p>
+
+          <p>
+            <input type="checkbox" id="sincronizar" name="sincronizar">
+            <label for="sincronizar">Espelhar no Google Agenda (receber notificações no celular)</label>
+          </p>
+        </fieldset>
+
+        <p>
+          <button type="submit">Salvar atividade</button>
+          <button type="reset">Limpar</button>
+        </p>
+      </form>
+    </section>
+
+    <!-- SEÇÕES: listagem, detalhes -->
   </main>
 
   <footer>
