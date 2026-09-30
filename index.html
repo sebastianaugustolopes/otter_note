@@ -120,7 +120,114 @@
       </form>
     </section>
 
-    <!-- SEÇÕES: listagem, detalhes -->
+    <section id="listagem" aria-labelledby="titulo-listagem">
+      <h2 id="titulo-listagem">Minhas atividades</h2>
+
+      <form action="#" method="get" aria-label="Pesquisa, filtro e ordenação">
+        <p>
+          <label for="busca">Pesquisar</label>
+          <input type="search" id="busca" name="busca" placeholder="Título ou autor">
+        </p>
+        <p>
+          <label for="filtro-categoria">Categoria</label>
+          <select id="filtro-categoria" name="categoria">
+            <option value="">Todas</option>
+            <option value="prova">Prova</option>
+            <option value="trabalho">Trabalho</option>
+            <option value="estudo">Estudo</option>
+            <option value="evento">Evento escolar</option>
+          </select>
+          <label for="filtro-status">Status</label>
+          <select id="filtro-status" name="status">
+            <option value="">Todos</option>
+            <option value="pendente">Pendente</option>
+            <option value="andamento">Em andamento</option>
+            <option value="concluida">Concluída</option>
+          </select>
+          <label for="filtro-prioridade">Prioridade</label>
+          <select id="filtro-prioridade" name="prioridade">
+            <option value="">Todas</option>
+            <option value="alta">Alta</option>
+            <option value="media">Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
+        </p>
+        <p>
+          <label for="ordenar">Ordenar por</label>
+          <select id="ordenar" name="ordenar">
+            <option value="prazo">Prazo</option>
+            <option value="titulo">Título (A–Z)</option>
+            <option value="prioridade">Prioridade</option>
+            <option value="status">Status</option>
+          </select>
+          <button type="submit">Aplicar</button>
+          <button type="reset">Limpar filtros</button>
+        </p>
+      </form>
+
+      <table>
+        <caption>Lista de atividades cadastradas (dados de exemplo)</caption>
+        <thead>
+          <tr>
+            <th scope="col">Título</th><th scope="col">Autor</th><th scope="col">Categoria</th>
+            <th scope="col">Ano</th><th scope="col">Prazo</th><th scope="col">Status</th>
+            <th scope="col">Prioridade</th><th scope="col">Formato</th><th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Prova de Matemática</th>
+            <td>Prof. Carlos Lima</td><td>Prova</td><td>2026</td><td>15/10/2026</td><td>Pendente</td><td>Alta</td><td>Presencial</td>
+            <td>
+              <a href="#detalhes">Ver detalhes</a>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Relatório de Química</th>
+            <td>Profa. Marina Souza</td><td>Trabalho</td><td>2026</td><td>20/10/2026</td><td>Em andamento</td><td>Média</td><td>Entrega digital</td>
+            <td>
+              <a href="#detalhes">Ver detalhes</a>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Leitura de Dom Casmurro</th>
+            <td>Profa. Helena Alves</td><td>Estudo</td><td>2026</td><td>30/10/2026</td><td>Pendente</td><td>Baixa</td><td>Online</td>
+            <td>
+              <a href="#detalhes">Ver detalhes</a>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Feira de Ciências</th>
+            <td>Coordenação Pedagógica</td><td>Evento escolar</td><td>2026</td><td>05/11/2026</td><td>Pendente</td><td>Alta</td><td>Presencial</td>
+            <td>
+              <a href="#detalhes">Ver detalhes</a>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Seminário de História</th>
+            <td>Prof. Rogério Dias</td><td>Trabalho</td><td>2026</td><td>10/09/2026</td><td>Concluída</td><td>Média</td><td>Presencial</td>
+            <td>
+              <a href="#detalhes">Ver detalhes</a>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="9">Total: 5 atividades</td></tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- SEÇÕES: detalhes -->
   </main>
 
   <footer>
