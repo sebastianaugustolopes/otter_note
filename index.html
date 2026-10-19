@@ -8,19 +8,22 @@
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body class="tem-aside">
 
   <header id="topo">
-    <img src="assets/img/logo.svg" alt="Logotipo do OtterNote, uma lontra" width="48" height="48">
-    <div>
-      <h1>OtterNote</h1>
-      <p>Organize tarefas, provas, trabalhos e eventos escolares em um só lugar.</p>
+    <div class="marca">
+      <img src="assets/img/logo.svg" alt="Logotipo do OtterNote, uma lontra" width="48" height="48">
+      <div>
+        <h1>OtterNote</h1>
+        <p>Organize tarefas, provas, trabalhos e eventos escolares em um só lugar.</p>
+      </div>
     </div>
 
     <nav aria-label="Navegação principal">
-      <ul>
+      <ul class="menu">
         <li><a href="#cadastro">Nova atividade</a></li>
         <li><a href="#listagem">Minhas atividades</a></li>
+        <li><a href="#estados">Mensagens</a></li>
         <li><a href="#detalhes">Detalhes</a></li>
         <li><a href="#agenda">Google Agenda</a></li>
         <li><a href="pages/sobre.html">Sobre</a></li>
@@ -34,21 +37,21 @@
       <p>Campos marcados com * são obrigatórios.</p>
 
       <form action="#" method="post">
-        <fieldset>
+        <fieldset class="grade-campos">
           <legend>Dados da atividade</legend>
 
           <p>
-            <label for="titulo">Título *</label><br>
+            <label for="titulo">Título *</label>
             <input type="text" id="titulo" name="titulo" required maxlength="100" placeholder="Ex.: Entrega do relatório de Química">
           </p>
 
           <p>
-            <label for="autor">Autor / Responsável *</label><br>
+            <label for="autor">Autor / Responsável *</label>
             <input type="text" id="autor" name="autor" required placeholder="Ex.: Profa. Marina Souza">
           </p>
 
           <p>
-            <label for="categoria">Categoria *</label><br>
+            <label for="categoria">Categoria *</label>
             <select id="categoria" name="categoria" required>
               <option value="">Selecione…</option>
               <option value="prova">Prova</option>
@@ -60,17 +63,17 @@
           </p>
 
           <p>
-            <label for="ano">Ano *</label><br>
+            <label for="ano">Ano *</label>
             <input type="number" id="ano" name="ano" min="2000" max="2100" value="2026" required>
           </p>
 
           <p>
-            <label for="prazo">Data e hora de entrega</label><br>
+            <label for="prazo">Data e hora de entrega</label>
             <input type="datetime-local" id="prazo" name="prazo">
           </p>
 
           <p>
-            <label for="formato">Formato</label><br>
+            <label for="formato">Formato</label>
             <select id="formato" name="formato">
               <option value="presencial">Presencial</option>
               <option value="online">Online</option>
@@ -80,11 +83,11 @@
           </p>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="grade-campos">
           <legend>Situação</legend>
 
-          <p>
-            <label for="status">Status *</label><br>
+          <p class="campo-full">
+            <label for="status">Status *</label>
             <select id="status" name="status" required>
               <option value="pendente">Pendente</option>
               <option value="andamento">Em andamento</option>
@@ -92,8 +95,8 @@
             </select>
           </p>
 
-          <p>Prioridade *</p>
-          <p>
+          <p class="campo-full">Prioridade *</p>
+          <p class="campo-full grupo-radio">
             <input type="radio" id="prioridade-baixa" name="prioridade" value="baixa">
             <label for="prioridade-baixa">Baixa</label>
             <input type="radio" id="prioridade-media" name="prioridade" value="media" checked>
@@ -102,20 +105,20 @@
             <label for="prioridade-alta">Alta</label>
           </p>
 
-          <p>
-            <label for="descricao">Descrição</label><br>
+          <p class="campo-full">
+            <label for="descricao">Descrição</label>
             <textarea id="descricao" name="descricao" rows="4" cols="40" placeholder="Detalhes, materiais, observações…"></textarea>
           </p>
 
-          <p>
+          <p class="campo-full campo-checkbox">
             <input type="checkbox" id="sincronizar" name="sincronizar">
             <label for="sincronizar">Espelhar no Google Agenda (receber notificações no celular)</label>
           </p>
         </fieldset>
 
-        <p>
-          <button type="submit">Salvar atividade</button>
-          <button type="reset">Limpar</button>
+        <p class="acoes">
+          <button type="submit" class="btn btn--primario">Salvar atividade</button>
+          <button type="reset" class="btn btn--secundario">Limpar</button>
         </p>
       </form>
     </section>
@@ -123,8 +126,8 @@
     <section id="listagem" aria-labelledby="titulo-listagem">
       <h2 id="titulo-listagem">Minhas atividades</h2>
 
-      <form action="#" method="get" aria-label="Pesquisa, filtro e ordenação">
-        <p>
+      <form action="#" method="get" aria-label="Pesquisa, filtro e ordenação" class="filtros">
+        <p class="campo-busca">
           <label for="busca">Pesquisar</label>
           <input type="search" id="busca" name="busca" placeholder="Título ou autor">
         </p>
@@ -160,11 +163,12 @@
             <option value="prioridade">Prioridade</option>
             <option value="status">Status</option>
           </select>
-          <button type="submit">Aplicar</button>
-          <button type="reset">Limpar filtros</button>
+          <button type="submit" class="btn btn--primario btn--sm">Aplicar</button>
+          <button type="reset" class="btn btn--secundario btn--sm">Limpar filtros</button>
         </p>
       </form>
 
+      <div class="tabela-wrapper">
       <table>
         <caption>Lista de atividades cadastradas (dados de exemplo)</caption>
         <thead>
@@ -177,47 +181,72 @@
         <tbody>
           <tr>
             <th scope="row">Prova de Matemática</th>
-            <td>Prof. Carlos Lima</td><td>Prova</td><td>2026</td><td>15/10/2026</td><td>Pendente</td><td>Alta</td><td>Presencial</td>
+            <td>Prof. Carlos Lima</td><td>Prova</td><td>2026</td><td>15/10/2026</td>
+            <td><span class="badge badge--pendente">Pendente</span></td>
+            <td><span class="badge badge--alta">Alta</span></td>
+            <td>Presencial</td>
             <td>
-              <a href="#detalhes">Ver detalhes</a>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
+              <div class="acoes-linha">
+                <a href="#detalhes" class="link-acao">Ver detalhes</a>
+                <button type="button" class="btn btn--sm btn--outline">Editar</button>
+                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
+              </div>
             </td>
           </tr>
           <tr>
             <th scope="row">Relatório de Química</th>
-            <td>Profa. Marina Souza</td><td>Trabalho</td><td>2026</td><td>20/10/2026</td><td>Em andamento</td><td>Média</td><td>Entrega digital</td>
+            <td>Profa. Marina Souza</td><td>Trabalho</td><td>2026</td><td>20/10/2026</td>
+            <td><span class="badge badge--andamento">Em andamento</span></td>
+            <td><span class="badge badge--media">Média</span></td>
+            <td>Entrega digital</td>
             <td>
-              <a href="#detalhes">Ver detalhes</a>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
+              <div class="acoes-linha">
+                <a href="#detalhes" class="link-acao">Ver detalhes</a>
+                <button type="button" class="btn btn--sm btn--outline">Editar</button>
+                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
+              </div>
             </td>
           </tr>
           <tr>
             <th scope="row">Leitura de Dom Casmurro</th>
-            <td>Profa. Helena Alves</td><td>Estudo</td><td>2026</td><td>30/10/2026</td><td>Pendente</td><td>Baixa</td><td>Online</td>
+            <td>Profa. Helena Alves</td><td>Estudo</td><td>2026</td><td>30/10/2026</td>
+            <td><span class="badge badge--pendente">Pendente</span></td>
+            <td><span class="badge badge--baixa">Baixa</span></td>
+            <td>Online</td>
             <td>
-              <a href="#detalhes">Ver detalhes</a>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
+              <div class="acoes-linha">
+                <a href="#detalhes" class="link-acao">Ver detalhes</a>
+                <button type="button" class="btn btn--sm btn--outline">Editar</button>
+                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
+              </div>
             </td>
           </tr>
           <tr>
             <th scope="row">Feira de Ciências</th>
-            <td>Coordenação Pedagógica</td><td>Evento escolar</td><td>2026</td><td>05/11/2026</td><td>Pendente</td><td>Alta</td><td>Presencial</td>
+            <td>Coordenação Pedagógica</td><td>Evento escolar</td><td>2026</td><td>05/11/2026</td>
+            <td><span class="badge badge--pendente">Pendente</span></td>
+            <td><span class="badge badge--alta">Alta</span></td>
+            <td>Presencial</td>
             <td>
-              <a href="#detalhes">Ver detalhes</a>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
+              <div class="acoes-linha">
+                <a href="#detalhes" class="link-acao">Ver detalhes</a>
+                <button type="button" class="btn btn--sm btn--outline">Editar</button>
+                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
+              </div>
             </td>
           </tr>
           <tr>
             <th scope="row">Seminário de História</th>
-            <td>Prof. Rogério Dias</td><td>Trabalho</td><td>2026</td><td>10/09/2026</td><td>Concluída</td><td>Média</td><td>Presencial</td>
+            <td>Prof. Rogério Dias</td><td>Trabalho</td><td>2026</td><td>10/09/2026</td>
+            <td><span class="badge badge--concluida">Concluída</span></td>
+            <td><span class="badge badge--media">Média</span></td>
+            <td>Presencial</td>
             <td>
-              <a href="#detalhes">Ver detalhes</a>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
+              <div class="acoes-linha">
+                <a href="#detalhes" class="link-acao">Ver detalhes</a>
+                <button type="button" class="btn btn--sm btn--outline">Editar</button>
+                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -225,12 +254,26 @@
           <tr><td colspan="9">Total: 5 atividades</td></tr>
         </tfoot>
       </table>
+      </div>
+    </section>
+
+    <section id="estados" aria-labelledby="titulo-estados">
+      <h2 id="titulo-estados">Mensagens do sistema</h2>
+      <p>Exemplos visuais dos estados que o sistema poderá exibir após a integração com JavaScript (próxima etapa).</p>
+
+      <div class="alerta alerta--sucesso" role="status">Atividade salva com sucesso.</div>
+      <div class="alerta alerta--erro" role="alert">Não foi possível salvar. Verifique os campos obrigatórios.</div>
+      <div class="alerta alerta--info" role="status">Carregando atividades…</div>
+      <p class="estado-vazio">Nenhuma atividade encontrada para os filtros selecionados.</p>
+      <p class="acoes">
+        <button type="button" class="btn btn--secundario" disabled>Ação indisponível (exemplo de botão desabilitado)</button>
+      </p>
     </section>
 
     <section id="detalhes" aria-labelledby="titulo-detalhes">
       <h2 id="titulo-detalhes">Detalhes da atividade</h2>
 
-      <article>
+      <article class="cartao">
         <header>
           <h3>Prova de Matemática</h3>
           <p>Categoria: Prova</p>
@@ -240,10 +283,10 @@
           <dt>Autor / Responsável</dt><dd>Prof. Carlos Lima</dd>
           <dt>Ano</dt><dd>2026</dd>
           <dt>Prazo</dt><dd><time datetime="2026-10-15T08:00">15/10/2026 às 08h00</time></dd>
-          <dt>Status</dt><dd>Pendente</dd>
-          <dt>Prioridade</dt><dd>Alta</dd>
+          <dt>Status</dt><dd><span class="badge badge--pendente">Pendente</span></dd>
+          <dt>Prioridade</dt><dd><span class="badge badge--alta">Alta</span></dd>
           <dt>Formato</dt><dd>Presencial</dd>
-          <dt>Google Agenda</dt><dd>Sincronizada</dd>
+          <dt>Google Agenda</dt><dd><span class="badge badge--sucesso">Sincronizada</span></dd>
         </dl>
 
         <h4>Descrição</h4>
@@ -257,9 +300,9 @@
         </ul>
 
         <footer>
-          <button type="button">Editar</button>
-          <button type="button">Excluir</button>
-          <a href="#listagem">Voltar à listagem</a>
+          <button type="button" class="btn btn--outline btn--sm">Editar</button>
+          <button type="button" class="btn btn--perigo btn--sm">Excluir</button>
+          <a href="#listagem" class="link-acao">Voltar à listagem</a>
         </footer>
       </article>
     </section>
@@ -269,8 +312,8 @@
   <aside id="agenda" aria-labelledby="titulo-agenda">
     <h2 id="titulo-agenda">Google Agenda</h2>
     <p>Espelhe suas atividades no Google Agenda e receba notificações no celular.</p>
-    <p>Status da conexão: <strong>não conectado</strong></p>
-    <button type="button">Conectar ao Google Agenda</button>
+    <p>Status da conexão: <span class="badge badge--alerta">não conectado</span></p>
+    <button type="button" class="btn btn--primario btn--bloco">Conectar ao Google Agenda</button>
 
     <h3>Resumo</h3>
     <ol>
@@ -281,7 +324,7 @@
   </aside>
 
   <footer>
-    <p>&copy; 2026 OtterNote — Projeto acadêmico, Etapa 1 (HTML).</p>
+    <p>&copy; 2026 OtterNote — Projeto acadêmico, Etapa 2 (CSS, layout e responsividade).</p>
   </footer>
 
   <script src="assets/js/script.js"></script>
