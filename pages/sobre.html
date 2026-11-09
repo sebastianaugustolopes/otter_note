@@ -26,8 +26,10 @@
       <p>O OtterNote é um sistema de organização acadêmica para gerenciar tarefas, provas, trabalhos e eventos escolares.</p>
       <h3>Entidade principal</h3>
       <p>Atividades, com título, autor, categoria, ano, status, prioridade e formato.</p>
-      <h3>API pública prevista</h3>
-      <p>Google Agenda, para espelhar as atividades e permitir notificações no celular.</p>
+      <h3>Dados e interatividade</h3>
+      <p>Cadastro, edição e exclusão de atividades são persistidos no <code>localStorage</code> do navegador, com pesquisa, filtros e ordenação em tempo real na listagem.</p>
+      <h3>APIs públicas integradas</h3>
+      <p>Feriados nacionais da <a href="https://brasilapi.com.br/docs" target="_blank" rel="noopener">BrasilAPI</a>, importáveis como eventos escolares, e sincronização real com o Google Agenda (Google Calendar API + login OAuth 2.0) para atividades marcadas com "Espelhar no Google Agenda". A conexão com o Google exige um Client ID próprio — veja o README do projeto.</p>
     </article>
   </main>
   <footer><p>&copy; 2026 OtterNote</p></footer>
