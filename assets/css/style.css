@@ -651,7 +651,8 @@ body > footer {
 
 #listagem-alerta,
 #cadastro-alerta,
-#importar-alerta {
+#importar-alerta,
+#agenda-alerta {
   margin-bottom: var(--espaco-4);
 }
 

@@ -7,6 +7,7 @@
   <title>OtterNote — Organização acadêmica</title>
   <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="tem-aside">
 
@@ -253,15 +254,15 @@
 
   <aside id="agenda" aria-labelledby="titulo-agenda">
     <h2 id="titulo-agenda">Google Agenda</h2>
-    <p>Espelhe suas atividades no Google Agenda e receba notificações no celular.</p>
-    <p>Status da conexão: <span class="badge badge--alerta">não conectado</span></p>
-    <button type="button" class="btn btn--primario btn--bloco">Conectar ao Google Agenda</button>
+    <p>Espelhe suas atividades no Google Agenda e receba notificações no celular. Marque "Espelhar no Google Agenda" no cadastro para sincronizar uma atividade.</p>
+    <p>Status da conexão: <span id="agenda-status" class="badge badge--alerta">não conectado</span></p>
+    <button type="button" id="btn-conectar-agenda" class="btn btn--primario btn--bloco">Conectar ao Google Agenda</button>
 
-    <h3>Resumo</h3>
-    <ol>
-      <li>Prova de Matemática — 15/10</li>
-      <li>Relatório de Química — 20/10</li>
-      <li>Leitura de Dom Casmurro — 30/10</li>
+    <div id="agenda-alerta" class="alerta oculto" role="status" aria-live="polite"></div>
+
+    <h3>Próximas atividades</h3>
+    <ol id="agenda-resumo">
+      <li>Nenhuma atividade com prazo cadastrada.</li>
     </ol>
   </aside>
 
@@ -272,6 +273,8 @@
   <script defer src="assets/js/storage.js"></script>
   <script defer src="assets/js/api.js"></script>
   <script defer src="assets/js/ui.js"></script>
+  <script defer src="assets/js/config.js"></script>
+  <script defer src="assets/js/google-agenda.js"></script>
   <script defer src="assets/js/app.js"></script>
 </body>
 </html>

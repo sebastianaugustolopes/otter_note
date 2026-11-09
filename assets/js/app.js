@@ -44,6 +44,11 @@ const importarResultado = document.querySelector("#importar-resultado");
 const listaFeriados = document.querySelector("#lista-feriados");
 const botaoImportarSelecionados = document.querySelector("#btn-importar-selecionados");
 
+const agendaResumo = document.querySelector("#agenda-resumo");
+const agendaStatus = document.querySelector("#agenda-status");
+const botaoConectarAgenda = document.querySelector("#btn-conectar-agenda");
+const agendaAlerta = document.querySelector("#agenda-alerta");
+
 // ---------- Estado em memória ----------
 
 let idEmEdicao = null;
@@ -218,12 +223,16 @@ corpoLista.addEventListener("click", (evento) => {
   }
 });
 
-function excluirAtividade(id) {
+async function excluirAtividade(id) {
   const atividade = Storage.obterPorId(id);
   if (!atividade) return;
 
   const confirmou = window.confirm(`Excluir a atividade "${atividade.titulo}"? Essa ação não pode ser desfeita.`);
   if (!confirmou) return;
+
+  if (atividade.googleEventId) {
+    await GoogleAgenda.removerEvento(atividade.googleEventId);
+  }
 
   Storage.remover(id);
 
@@ -265,8 +274,16 @@ function mostrarDetalhes(id) {
 
   detalheFormato.textContent = Ui.rotuloFormato(atividade.formato);
 
-  detalheAgenda.textContent = atividade.sincronizar ? "Sincronizada" : "Não sincronizada";
-  detalheAgenda.className = `badge badge--${atividade.sincronizar ? "sucesso" : "alerta"}`;
+  if (atividade.googleEventId) {
+    detalheAgenda.textContent = "Sincronizada";
+    detalheAgenda.className = "badge badge--sucesso";
+  } else if (atividade.sincronizar) {
+    detalheAgenda.textContent = "Pendente de sincronização";
+    detalheAgenda.className = "badge badge--alerta";
+  } else {
+    detalheAgenda.textContent = "Não sincronizada";
+    detalheAgenda.className = "badge badge--alerta";
+  }
 
   detalheDescricao.textContent = atividade.descricao || "Sem descrição.";
 
@@ -293,7 +310,7 @@ botaoDetalheExcluir.addEventListener("click", () => {
   if (id) excluirAtividade(id);
 });
 
-formCadastro.addEventListener("submit", (evento) => {
+formCadastro.addEventListener("submit", async (evento) => {
   evento.preventDefault();
 
   if (!validarFormulario(formCadastro)) {
@@ -303,6 +320,7 @@ formCadastro.addEventListener("submit", (evento) => {
 
   const estavaEditando = Boolean(idEmEdicao);
   const prioridadeSelecionada = formCadastro.querySelector('input[name="prioridade"]:checked');
+  const anterior = estavaEditando ? Storage.obterPorId(idEmEdicao) : null;
 
   const atividade = {
     id: idEmEdicao ?? Storage.gerarId(),
@@ -316,22 +334,141 @@ formCadastro.addEventListener("submit", (evento) => {
     prioridade: prioridadeSelecionada ? prioridadeSelecionada.value : "media",
     descricao: formCadastro.descricao.value.trim(),
     sincronizar: formCadastro.sincronizar.checked,
+    googleEventId: anterior?.googleEventId ?? null,
   };
 
   Storage.salvar(atividade);
   formCadastro.reset();
 
+  const avisoAgenda = await sincronizarComGoogleSeNecessario(atividade);
+
   Ui.mostrarAlerta(
     cadastroAlerta,
-    estavaEditando ? "Atividade atualizada com sucesso." : "Atividade cadastrada com sucesso.",
+    `${estavaEditando ? "Atividade atualizada com sucesso." : "Atividade cadastrada com sucesso."}${avisoAgenda}`,
     "sucesso"
   );
   renderLista();
+  renderAgendaResumo();
 
   if (idDetalheAtual === atividade.id) {
     mostrarDetalhes(atividade.id);
   }
 });
+
+// Mantém a sincronização da atividade com o Google Agenda coerente com a
+// caixa "sincronizar": cria/atualiza o evento quando marcada, remove quando
+// desmarcada. Retorna um pequeno texto (ou string vazia) para anexar ao
+// alerta de sucesso do cadastro.
+async function sincronizarComGoogleSeNecessario(atividade) {
+  if (atividade.sincronizar) {
+    if (!GoogleAgenda.estaConectado()) {
+      return " Conecte-se ao Google Agenda (na coluna à direita) para sincronizar.";
+    }
+
+    try {
+      atividade.googleEventId = await GoogleAgenda.sincronizarAtividade(atividade);
+      Storage.salvar(atividade);
+      return " Sincronizada com o Google Agenda.";
+    } catch (erro) {
+      return ` Não foi possível sincronizar com o Google Agenda: ${erro.message}`;
+    }
+  }
+
+  if (atividade.googleEventId) {
+    await GoogleAgenda.removerEvento(atividade.googleEventId);
+    atividade.googleEventId = null;
+    Storage.salvar(atividade);
+  }
+
+  return "";
+}
+
+// ---------- Conexão com o Google Agenda ----------
+
+function atualizarEstadoConexaoAgenda(conectado, mensagemErro) {
+  agendaStatus.textContent = conectado ? "conectado" : "não conectado";
+  agendaStatus.className = `badge badge--${conectado ? "sucesso" : "alerta"}`;
+  botaoConectarAgenda.textContent = conectado ? "Desconectar do Google Agenda" : "Conectar ao Google Agenda";
+
+  if (mensagemErro) {
+    Ui.mostrarAlerta(agendaAlerta, mensagemErro, "erro");
+  } else if (conectado) {
+    Ui.mostrarAlerta(agendaAlerta, "Conectado. Sincronizando atividades marcadas…", "info");
+  }
+}
+
+GoogleAgenda.aoConectar(async (conectado, mensagemErro) => {
+  atualizarEstadoConexaoAgenda(conectado, mensagemErro);
+  if (!conectado) return;
+
+  const resultado = await sincronizarPendentesComGoogle();
+  if (resultado.total === 0) {
+    Ui.mostrarAlerta(agendaAlerta, "Conectado ao Google Agenda.", "sucesso");
+  } else if (resultado.falhas === 0) {
+    Ui.mostrarAlerta(agendaAlerta, `Conectado. ${resultado.total} atividade(s) sincronizada(s).`, "sucesso");
+  } else {
+    Ui.mostrarAlerta(
+      agendaAlerta,
+      `Conectado. ${resultado.total - resultado.falhas} sincronizada(s), ${resultado.falhas} falharam.`,
+      "erro"
+    );
+  }
+
+  renderLista();
+  if (idDetalheAtual) mostrarDetalhes(idDetalheAtual);
+});
+
+// Sincroniza todas as atividades marcadas com "sincronizar" que ainda não
+// têm um evento no Google Agenda (ex.: cadastradas antes de conectar).
+async function sincronizarPendentesComGoogle() {
+  const pendentes = Storage.obterTodas().filter((atividade) => atividade.sincronizar && !atividade.googleEventId);
+  let falhas = 0;
+
+  for (const atividade of pendentes) {
+    try {
+      atividade.googleEventId = await GoogleAgenda.sincronizarAtividade(atividade);
+      Storage.salvar(atividade);
+    } catch {
+      falhas += 1;
+    }
+  }
+
+  return { total: pendentes.length, falhas };
+}
+
+botaoConectarAgenda.addEventListener("click", () => {
+  if (GoogleAgenda.estaConectado()) {
+    GoogleAgenda.desconectar();
+    return;
+  }
+
+  try {
+    Ui.mostrarAlerta(agendaAlerta, "Abrindo login do Google…", "info");
+    GoogleAgenda.conectar();
+  } catch (erro) {
+    Ui.mostrarAlerta(agendaAlerta, erro.message, "erro");
+  }
+});
+
+// ---------- Resumo no aside (Google Agenda) ----------
+
+function renderAgendaResumo() {
+  const proximas = Storage.obterTodas()
+    .filter((atividade) => Boolean(atividade.prazo))
+    .sort((a, b) => a.prazo.localeCompare(b.prazo))
+    .slice(0, 5);
+
+  if (proximas.length === 0) {
+    agendaResumo.replaceChildren(Ui.criarEl("li", {}, "Nenhuma atividade com prazo cadastrada."));
+    return;
+  }
+
+  agendaResumo.replaceChildren(
+    ...proximas.map((atividade) =>
+      Ui.criarEl("li", {}, `${atividade.titulo} — ${Ui.formatarPrazoCurto(atividade.prazo)}`)
+    )
+  );
+}
 
 // ---------- Importação de feriados (BrasilAPI) ----------
 
@@ -420,3 +557,4 @@ botaoImportarSelecionados.addEventListener("click", () => {
 // ---------- Inicialização ----------
 
 renderLista();
+renderAgendaResumo();
