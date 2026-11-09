@@ -1,6 +1,7 @@
-// Ponto de entrada: liga a interface às funcionalidades de JavaScript.
-// Carregado como script clássico (não é um módulo ES) com `defer`, depois
-// de ui.js, para funcionar tanto em file:// quanto em um servidor HTTP.
+// Ponto de entrada: liga os dados (storage.js) e a interface (ui.js) aos
+// elementos da página. Carregado como script clássico (não é um módulo ES)
+// com `defer`, depois de storage.js e ui.js, para funcionar tanto em
+// file:// quanto em um servidor HTTP.
 
 // ---------- Referências de elementos ----------
 
@@ -11,50 +12,6 @@ const cadastroAlerta = document.querySelector("#cadastro-alerta");
 const corpoLista = document.querySelector("#corpo-lista");
 const totalAtividades = document.querySelector("#total-atividades");
 const listaVazia = document.querySelector("#lista-vazia");
-
-// ---------- Dados em memória (persistência chega na próxima etapa) ----------
-
-let atividades = [
-  {
-    id: "1",
-    titulo: "Prova de Matemática",
-    autor: "Prof. Carlos Lima",
-    categoria: "prova",
-    ano: 2026,
-    prazo: "2026-10-15T08:00",
-    formato: "presencial",
-    status: "pendente",
-    prioridade: "alta",
-    descricao: "Prova sobre funções do 1º e 2º graus e geometria plana. Levar calculadora científica.",
-    sincronizar: true,
-  },
-  {
-    id: "2",
-    titulo: "Relatório de Química",
-    autor: "Profa. Marina Souza",
-    categoria: "trabalho",
-    ano: 2026,
-    prazo: "2026-10-20T23:59",
-    formato: "entrega-digital",
-    status: "andamento",
-    prioridade: "media",
-    descricao: "Relatório sobre a prática de titulação ácido-base realizada em laboratório.",
-    sincronizar: false,
-  },
-  {
-    id: "3",
-    titulo: "Leitura de Dom Casmurro",
-    autor: "Profa. Helena Alves",
-    categoria: "estudo",
-    ano: 2026,
-    prazo: "2026-10-30T23:59",
-    formato: "online",
-    status: "pendente",
-    prioridade: "baixa",
-    descricao: "Leitura completa da obra para debate em sala.",
-    sincronizar: false,
-  },
-];
 
 // ---------- Cadastro ----------
 
@@ -84,6 +41,8 @@ function criarLinhaTabela(atividade) {
 }
 
 function renderLista() {
+  const atividades = Storage.obterTodas();
+
   corpoLista.replaceChildren(...atividades.map(criarLinhaTabela));
   totalAtividades.textContent = String(atividades.length);
   listaVazia.classList.toggle("oculto", atividades.length > 0);
@@ -100,7 +59,7 @@ formCadastro.addEventListener("submit", (evento) => {
   const prioridadeSelecionada = formCadastro.querySelector('input[name="prioridade"]:checked');
 
   const atividade = {
-    id: String(Date.now()),
+    id: Storage.gerarId(),
     titulo: formCadastro.titulo.value.trim(),
     autor: formCadastro.autor.value.trim(),
     categoria: formCadastro.categoria.value,
@@ -113,7 +72,7 @@ formCadastro.addEventListener("submit", (evento) => {
     sincronizar: formCadastro.sincronizar.checked,
   };
 
-  atividades.push(atividade);
+  Storage.salvar(atividade);
   formCadastro.reset();
 
   Ui.mostrarAlerta(cadastroAlerta, "Atividade cadastrada com sucesso.", "sucesso");
