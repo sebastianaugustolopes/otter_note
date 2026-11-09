@@ -11,7 +11,11 @@ const botaoSalvar = document.querySelector("#btn-salvar");
 const botaoCancelarEdicao = document.querySelector("#btn-cancelar-edicao");
 const cadastroAlerta = document.querySelector("#cadastro-alerta");
 
+const formFiltros = document.querySelector("#form-filtros");
 const buscaInput = document.querySelector("#busca");
+const filtroCategoria = document.querySelector("#filtro-categoria");
+const filtroStatus = document.querySelector("#filtro-status");
+const filtroPrioridade = document.querySelector("#filtro-prioridade");
 const corpoLista = document.querySelector("#corpo-lista");
 const totalAtividades = document.querySelector("#total-atividades");
 const listaVazia = document.querySelector("#lista-vazia");
@@ -122,16 +126,23 @@ function criarLinhaTabela(atividade) {
 function obterFiltrosAtuais() {
   return {
     busca: buscaInput.value.trim().toLowerCase(),
+    categoria: filtroCategoria.value,
+    status: filtroStatus.value,
+    prioridade: filtroPrioridade.value,
   };
 }
 
 function aplicarFiltros(atividades, filtros) {
   return atividades.filter((atividade) => {
-    return (
+    const correspondeBusca =
       !filtros.busca ||
       atividade.titulo.toLowerCase().includes(filtros.busca) ||
-      atividade.autor.toLowerCase().includes(filtros.busca)
-    );
+      atividade.autor.toLowerCase().includes(filtros.busca);
+    const correspondeCategoria = !filtros.categoria || atividade.categoria === filtros.categoria;
+    const correspondeStatus = !filtros.status || atividade.status === filtros.status;
+    const correspondePrioridade = !filtros.prioridade || atividade.prioridade === filtros.prioridade;
+
+    return correspondeBusca && correspondeCategoria && correspondeStatus && correspondePrioridade;
   });
 }
 
@@ -144,7 +155,18 @@ function renderLista() {
   listaVazia.classList.toggle("oculto", atividadesFiltradas.length > 0);
 }
 
-buscaInput.addEventListener("input", renderLista);
+[buscaInput, filtroCategoria, filtroStatus, filtroPrioridade].forEach((campo) => {
+  campo.addEventListener(campo === buscaInput ? "input" : "change", renderLista);
+});
+
+formFiltros.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  renderLista();
+});
+
+formFiltros.addEventListener("reset", () => {
+  renderLista();
+});
 
 corpoLista.addEventListener("click", (evento) => {
   const gatilho = evento.target.closest("[data-acao]");
