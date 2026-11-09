@@ -11,6 +11,7 @@ const botaoSalvar = document.querySelector("#btn-salvar");
 const botaoCancelarEdicao = document.querySelector("#btn-cancelar-edicao");
 const cadastroAlerta = document.querySelector("#cadastro-alerta");
 
+const buscaInput = document.querySelector("#busca");
 const corpoLista = document.querySelector("#corpo-lista");
 const totalAtividades = document.querySelector("#total-atividades");
 const listaVazia = document.querySelector("#lista-vazia");
@@ -118,13 +119,32 @@ function criarLinhaTabela(atividade) {
   ]);
 }
 
-function renderLista() {
-  const atividades = Storage.obterTodas();
-
-  corpoLista.replaceChildren(...atividades.map(criarLinhaTabela));
-  totalAtividades.textContent = String(atividades.length);
-  listaVazia.classList.toggle("oculto", atividades.length > 0);
+function obterFiltrosAtuais() {
+  return {
+    busca: buscaInput.value.trim().toLowerCase(),
+  };
 }
+
+function aplicarFiltros(atividades, filtros) {
+  return atividades.filter((atividade) => {
+    return (
+      !filtros.busca ||
+      atividade.titulo.toLowerCase().includes(filtros.busca) ||
+      atividade.autor.toLowerCase().includes(filtros.busca)
+    );
+  });
+}
+
+function renderLista() {
+  const filtros = obterFiltrosAtuais();
+  const atividadesFiltradas = aplicarFiltros(Storage.obterTodas(), filtros);
+
+  corpoLista.replaceChildren(...atividadesFiltradas.map(criarLinhaTabela));
+  totalAtividades.textContent = String(atividadesFiltradas.length);
+  listaVazia.classList.toggle("oculto", atividadesFiltradas.length > 0);
+}
+
+buscaInput.addEventListener("input", renderLista);
 
 corpoLista.addEventListener("click", (evento) => {
   const gatilho = evento.target.closest("[data-acao]");
