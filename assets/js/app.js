@@ -14,6 +14,7 @@ const cadastroAlerta = document.querySelector("#cadastro-alerta");
 const corpoLista = document.querySelector("#corpo-lista");
 const totalAtividades = document.querySelector("#total-atividades");
 const listaVazia = document.querySelector("#lista-vazia");
+const listagemAlerta = document.querySelector("#listagem-alerta");
 
 // ---------- Estado em memória ----------
 
@@ -76,6 +77,11 @@ function criarLinhaTabela(atividade) {
       { type: "button", class: "btn btn--sm btn--outline", dataset: { acao: "editar", id: atividade.id } },
       "Editar"
     ),
+    Ui.criarEl(
+      "button",
+      { type: "button", class: "btn btn--sm btn--perigo", dataset: { acao: "excluir", id: atividade.id } },
+      "Excluir"
+    ),
   ]);
 
   return Ui.criarEl("tr", {}, [
@@ -108,8 +114,25 @@ corpoLista.addEventListener("click", (evento) => {
   if (acao === "editar") {
     const atividade = Storage.obterPorId(id);
     if (atividade) entrarEmModoEdicao(atividade);
+  } else if (acao === "excluir") {
+    excluirAtividade(id);
   }
 });
+
+function excluirAtividade(id) {
+  const atividade = Storage.obterPorId(id);
+  if (!atividade) return;
+
+  const confirmou = window.confirm(`Excluir a atividade "${atividade.titulo}"? Essa ação não pode ser desfeita.`);
+  if (!confirmou) return;
+
+  Storage.remover(id);
+
+  if (idEmEdicao === id) formCadastro.reset();
+
+  renderLista();
+  Ui.mostrarAlerta(listagemAlerta, "Atividade excluída com sucesso.", "sucesso");
+}
 
 formCadastro.addEventListener("submit", (evento) => {
   evento.preventDefault();
