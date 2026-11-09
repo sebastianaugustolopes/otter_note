@@ -553,6 +553,7 @@ botaoImportarSelecionados.addEventListener("click", () => {
   Ui.mostrarAlerta(importarAlerta, `${marcados.length} feriado(s) importado(s) para a listagem.`, "sucesso");
   renderFeriadosEncontrados(ultimosFeriadosBuscados);
   renderLista();
+  renderAgendaResumo();
 });
 
 // ---------- Inicialização ----------
