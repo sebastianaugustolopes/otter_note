@@ -197,35 +197,30 @@
     <section id="detalhes" aria-labelledby="titulo-detalhes">
       <h2 id="titulo-detalhes">Detalhes da atividade</h2>
 
-      <article class="cartao">
+      <p id="detalhes-vazio" class="estado-vazio">Nenhuma atividade selecionada. Clique em “Ver detalhes” em uma atividade da listagem.</p>
+
+      <article class="cartao oculto" id="cartao-detalhes">
         <header>
-          <h3>Prova de Matemática</h3>
-          <p>Categoria: Prova</p>
+          <h3 id="detalhe-titulo">—</h3>
+          <p>Categoria: <span id="detalhe-categoria"></span></p>
         </header>
 
         <dl>
-          <dt>Autor / Responsável</dt><dd>Prof. Carlos Lima</dd>
-          <dt>Ano</dt><dd>2026</dd>
-          <dt>Prazo</dt><dd><time datetime="2026-10-15T08:00">15/10/2026 às 08h00</time></dd>
-          <dt>Status</dt><dd><span class="badge badge--pendente">Pendente</span></dd>
-          <dt>Prioridade</dt><dd><span class="badge badge--alta">Alta</span></dd>
-          <dt>Formato</dt><dd>Presencial</dd>
-          <dt>Google Agenda</dt><dd><span class="badge badge--sucesso">Sincronizada</span></dd>
+          <dt>Autor / Responsável</dt><dd id="detalhe-autor"></dd>
+          <dt>Ano</dt><dd id="detalhe-ano"></dd>
+          <dt>Prazo</dt><dd><time id="detalhe-prazo"></time></dd>
+          <dt>Status</dt><dd><span id="detalhe-status" class="badge"></span></dd>
+          <dt>Prioridade</dt><dd><span id="detalhe-prioridade" class="badge"></span></dd>
+          <dt>Formato</dt><dd id="detalhe-formato"></dd>
+          <dt>Google Agenda</dt><dd><span id="detalhe-agenda" class="badge"></span></dd>
         </dl>
 
         <h4>Descrição</h4>
-        <p>Prova sobre funções do 1º e 2º graus e geometria plana. Levar calculadora científica.</p>
-
-        <h4>Checklist de estudo</h4>
-        <ul>
-          <li>Revisar lista de exercícios 3</li>
-          <li>Resolver provas anteriores</li>
-          <li>Tirar dúvidas com o professor</li>
-        </ul>
+        <p id="detalhe-descricao"></p>
 
         <footer>
-          <button type="button" class="btn btn--outline btn--sm">Editar</button>
-          <button type="button" class="btn btn--perigo btn--sm">Excluir</button>
+          <button type="button" id="detalhe-btn-editar" class="btn btn--outline btn--sm">Editar</button>
+          <button type="button" id="detalhe-btn-excluir" class="btn btn--perigo btn--sm">Excluir</button>
           <a href="#listagem" class="link-acao">Voltar à listagem</a>
         </footer>
       </article>

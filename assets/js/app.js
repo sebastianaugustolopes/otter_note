@@ -16,9 +16,25 @@ const totalAtividades = document.querySelector("#total-atividades");
 const listaVazia = document.querySelector("#lista-vazia");
 const listagemAlerta = document.querySelector("#listagem-alerta");
 
+const detalhesVazio = document.querySelector("#detalhes-vazio");
+const cartaoDetalhes = document.querySelector("#cartao-detalhes");
+const detalheTitulo = document.querySelector("#detalhe-titulo");
+const detalheCategoria = document.querySelector("#detalhe-categoria");
+const detalheAutor = document.querySelector("#detalhe-autor");
+const detalheAno = document.querySelector("#detalhe-ano");
+const detalhePrazo = document.querySelector("#detalhe-prazo");
+const detalheStatus = document.querySelector("#detalhe-status");
+const detalhePrioridade = document.querySelector("#detalhe-prioridade");
+const detalheFormato = document.querySelector("#detalhe-formato");
+const detalheAgenda = document.querySelector("#detalhe-agenda");
+const detalheDescricao = document.querySelector("#detalhe-descricao");
+const botaoDetalheEditar = document.querySelector("#detalhe-btn-editar");
+const botaoDetalheExcluir = document.querySelector("#detalhe-btn-excluir");
+
 // ---------- Estado em memória ----------
 
 let idEmEdicao = null;
+let idDetalheAtual = null;
 
 // ---------- Cadastro (criar/atualizar) ----------
 
@@ -73,6 +89,11 @@ botaoCancelarEdicao.addEventListener("click", () => {
 function criarLinhaTabela(atividade) {
   const celulaAcoes = Ui.criarEl("div", { class: "acoes-linha" }, [
     Ui.criarEl(
+      "a",
+      { href: "#detalhes", class: "link-acao", dataset: { acao: "detalhes", id: atividade.id } },
+      "Ver detalhes"
+    ),
+    Ui.criarEl(
       "button",
       { type: "button", class: "btn btn--sm btn--outline", dataset: { acao: "editar", id: atividade.id } },
       "Editar"
@@ -111,7 +132,10 @@ corpoLista.addEventListener("click", (evento) => {
 
   const { acao, id } = gatilho.dataset;
 
-  if (acao === "editar") {
+  if (acao === "detalhes") {
+    evento.preventDefault();
+    mostrarDetalhes(id);
+  } else if (acao === "editar") {
     const atividade = Storage.obterPorId(id);
     if (atividade) entrarEmModoEdicao(atividade);
   } else if (acao === "excluir") {
@@ -128,11 +152,71 @@ function excluirAtividade(id) {
 
   Storage.remover(id);
 
+  if (idDetalheAtual === id) limparDetalhes();
   if (idEmEdicao === id) formCadastro.reset();
 
   renderLista();
   Ui.mostrarAlerta(listagemAlerta, "Atividade excluída com sucesso.", "sucesso");
 }
+
+// ---------- Detalhes ----------
+
+function mostrarDetalhes(id) {
+  const atividade = Storage.obterPorId(id);
+  if (!atividade) return;
+
+  idDetalheAtual = id;
+
+  detalhesVazio.classList.add("oculto");
+  cartaoDetalhes.classList.remove("oculto");
+
+  detalheTitulo.textContent = atividade.titulo;
+  detalheCategoria.textContent = Ui.rotuloCategoria(atividade.categoria);
+  detalheAutor.textContent = atividade.autor;
+  detalheAno.textContent = String(atividade.ano);
+
+  detalhePrazo.textContent = Ui.formatarPrazoCompleto(atividade.prazo);
+  if (atividade.prazo) {
+    detalhePrazo.setAttribute("datetime", atividade.prazo);
+  } else {
+    detalhePrazo.removeAttribute("datetime");
+  }
+
+  detalheStatus.textContent = Ui.rotuloStatus(atividade.status);
+  detalheStatus.className = `badge badge--${atividade.status}`;
+
+  detalhePrioridade.textContent = Ui.rotuloPrioridade(atividade.prioridade);
+  detalhePrioridade.className = `badge badge--${atividade.prioridade}`;
+
+  detalheFormato.textContent = Ui.rotuloFormato(atividade.formato);
+
+  detalheAgenda.textContent = atividade.sincronizar ? "Sincronizada" : "Não sincronizada";
+  detalheAgenda.className = `badge badge--${atividade.sincronizar ? "sucesso" : "alerta"}`;
+
+  detalheDescricao.textContent = atividade.descricao || "Sem descrição.";
+
+  botaoDetalheEditar.dataset.id = atividade.id;
+  botaoDetalheExcluir.dataset.id = atividade.id;
+
+  document.querySelector("#detalhes").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function limparDetalhes() {
+  idDetalheAtual = null;
+  cartaoDetalhes.classList.add("oculto");
+  detalhesVazio.classList.remove("oculto");
+}
+
+botaoDetalheEditar.addEventListener("click", () => {
+  const id = botaoDetalheEditar.dataset.id;
+  const atividade = id && Storage.obterPorId(id);
+  if (atividade) entrarEmModoEdicao(atividade);
+});
+
+botaoDetalheExcluir.addEventListener("click", () => {
+  const id = botaoDetalheExcluir.dataset.id;
+  if (id) excluirAtividade(id);
+});
 
 formCadastro.addEventListener("submit", (evento) => {
   evento.preventDefault();
@@ -168,6 +252,10 @@ formCadastro.addEventListener("submit", (evento) => {
     "sucesso"
   );
   renderLista();
+
+  if (idDetalheAtual === atividade.id) {
+    mostrarDetalhes(atividade.id);
+  }
 });
 
 // ---------- Inicialização ----------
