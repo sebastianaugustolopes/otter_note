@@ -37,10 +37,18 @@ const detalheDescricao = document.querySelector("#detalhe-descricao");
 const botaoDetalheEditar = document.querySelector("#detalhe-btn-editar");
 const botaoDetalheExcluir = document.querySelector("#detalhe-btn-excluir");
 
+const formImportar = document.querySelector("#form-importar");
+const anoFeriadosInput = document.querySelector("#ano-feriados");
+const importarAlerta = document.querySelector("#importar-alerta");
+const importarResultado = document.querySelector("#importar-resultado");
+const listaFeriados = document.querySelector("#lista-feriados");
+const botaoImportarSelecionados = document.querySelector("#btn-importar-selecionados");
+
 // ---------- Estado em memória ----------
 
 let idEmEdicao = null;
 let idDetalheAtual = null;
+let ultimosFeriadosBuscados = [];
 
 // ---------- Cadastro (criar/atualizar) ----------
 
@@ -323,6 +331,90 @@ formCadastro.addEventListener("submit", (evento) => {
   if (idDetalheAtual === atividade.id) {
     mostrarDetalhes(atividade.id);
   }
+});
+
+// ---------- Importação de feriados (BrasilAPI) ----------
+
+function idDoFeriado(feriado) {
+  return `feriado-${feriado.date}`;
+}
+
+function renderFeriadosEncontrados(feriados) {
+  const idsExistentes = new Set(Storage.obterTodas().map((atividade) => atividade.id));
+
+  listaFeriados.replaceChildren(
+    ...feriados.map((feriado) => {
+      const id = idDoFeriado(feriado);
+      const texto = `${Ui.formatarPrazoCurto(`${feriado.date}T00:00`)} — ${feriado.name}`;
+
+      if (idsExistentes.has(id)) {
+        return Ui.criarEl("li", {}, Ui.criarEl("span", { class: "feriado-ja-importado" }, `${texto} (já importado)`));
+      }
+
+      const checkbox = Ui.criarEl("input", {
+        type: "checkbox",
+        value: feriado.date,
+        dataset: { nome: feriado.name },
+      });
+
+      return Ui.criarEl("li", {}, Ui.criarEl("label", {}, [checkbox, document.createTextNode(texto)]));
+    })
+  );
+}
+
+formImportar.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+
+  const ano = Number(anoFeriadosInput.value);
+  if (!ano) return;
+
+  importarResultado.classList.add("oculto");
+  Ui.mostrarAlerta(importarAlerta, "Buscando feriados…", "info");
+
+  try {
+    const feriados = await Api.buscarFeriados(ano);
+    ultimosFeriadosBuscados = feriados;
+    renderFeriadosEncontrados(feriados);
+    importarResultado.classList.remove("oculto");
+    Ui.ocultarAlerta(importarAlerta);
+  } catch (erro) {
+    Ui.mostrarAlerta(
+      importarAlerta,
+      erro instanceof Error ? erro.message : "Não foi possível buscar os feriados. Tente novamente.",
+      "erro"
+    );
+  }
+});
+
+botaoImportarSelecionados.addEventListener("click", () => {
+  const marcados = [...listaFeriados.querySelectorAll('input[type="checkbox"]:checked')];
+
+  if (marcados.length === 0) {
+    Ui.mostrarAlerta(importarAlerta, "Selecione ao menos um feriado para importar.", "erro");
+    return;
+  }
+
+  for (const checkbox of marcados) {
+    const dataIso = checkbox.value; // "AAAA-MM-DD"
+
+    Storage.salvar({
+      id: `feriado-${dataIso}`,
+      titulo: checkbox.dataset.nome,
+      autor: "Governo Federal (BrasilAPI)",
+      categoria: "evento",
+      ano: Number(dataIso.slice(0, 4)),
+      prazo: `${dataIso}T00:00`,
+      formato: "presencial",
+      status: "pendente",
+      prioridade: "baixa",
+      descricao: "Feriado nacional importado automaticamente via BrasilAPI.",
+      sincronizar: false,
+    });
+  }
+
+  Ui.mostrarAlerta(importarAlerta, `${marcados.length} feriado(s) importado(s) para a listagem.`, "sucesso");
+  renderFeriadosEncontrados(ultimosFeriadosBuscados);
+  renderLista();
 });
 
 // ---------- Inicialização ----------
