@@ -16,6 +16,7 @@ const buscaInput = document.querySelector("#busca");
 const filtroCategoria = document.querySelector("#filtro-categoria");
 const filtroStatus = document.querySelector("#filtro-status");
 const filtroPrioridade = document.querySelector("#filtro-prioridade");
+const ordenarSelect = document.querySelector("#ordenar");
 const corpoLista = document.querySelector("#corpo-lista");
 const totalAtividades = document.querySelector("#total-atividades");
 const listaVazia = document.querySelector("#lista-vazia");
@@ -129,6 +130,7 @@ function obterFiltrosAtuais() {
     categoria: filtroCategoria.value,
     status: filtroStatus.value,
     prioridade: filtroPrioridade.value,
+    ordenar: ordenarSelect.value,
   };
 }
 
@@ -146,16 +148,39 @@ function aplicarFiltros(atividades, filtros) {
   });
 }
 
+const PESO_PRIORIDADE = { alta: 0, media: 1, baixa: 2 };
+const PESO_STATUS = { pendente: 0, andamento: 1, concluida: 2 };
+
+function ordenarAtividades(atividades, criterio) {
+  const copia = [...atividades];
+
+  switch (criterio) {
+    case "titulo":
+      return copia.sort((a, b) => a.titulo.localeCompare(b.titulo, "pt-BR"));
+    case "prioridade":
+      return copia.sort((a, b) => PESO_PRIORIDADE[a.prioridade] - PESO_PRIORIDADE[b.prioridade]);
+    case "status":
+      return copia.sort((a, b) => PESO_STATUS[a.status] - PESO_STATUS[b.status]);
+    default:
+      return copia.sort((a, b) => {
+        if (!a.prazo && !b.prazo) return 0;
+        if (!a.prazo) return 1;
+        if (!b.prazo) return -1;
+        return a.prazo.localeCompare(b.prazo);
+      });
+  }
+}
+
 function renderLista() {
   const filtros = obterFiltrosAtuais();
-  const atividadesFiltradas = aplicarFiltros(Storage.obterTodas(), filtros);
+  const atividadesFiltradas = ordenarAtividades(aplicarFiltros(Storage.obterTodas(), filtros), filtros.ordenar);
 
   corpoLista.replaceChildren(...atividadesFiltradas.map(criarLinhaTabela));
   totalAtividades.textContent = String(atividadesFiltradas.length);
   listaVazia.classList.toggle("oculto", atividadesFiltradas.length > 0);
 }
 
-[buscaInput, filtroCategoria, filtroStatus, filtroPrioridade].forEach((campo) => {
+[buscaInput, filtroCategoria, filtroStatus, filtroPrioridade, ordenarSelect].forEach((campo) => {
   campo.addEventListener(campo === buscaInput ? "input" : "change", renderLista);
 });
 
