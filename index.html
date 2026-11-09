@@ -38,6 +38,7 @@
       <div id="cadastro-alerta" class="alerta oculto" role="alert" aria-live="assertive"></div>
 
       <form id="form-cadastro" action="#" method="post" novalidate>
+        <input type="hidden" id="atividade-id" name="atividadeId">
         <fieldset class="grade-campos">
           <legend>Dados da atividade</legend>
 
@@ -119,6 +120,7 @@
 
         <p class="acoes">
           <button type="submit" id="btn-salvar" class="btn btn--primario">Salvar atividade</button>
+          <button type="button" id="btn-cancelar-edicao" class="btn btn--secundario oculto">Cancelar edição</button>
           <button type="reset" class="btn btn--secundario">Limpar</button>
         </p>
       </form>
