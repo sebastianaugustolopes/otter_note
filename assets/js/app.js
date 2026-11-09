@@ -240,6 +240,7 @@ async function excluirAtividade(id) {
   if (idEmEdicao === id) formCadastro.reset();
 
   renderLista();
+  renderAgendaResumo();
   Ui.mostrarAlerta(listagemAlerta, "Atividade excluída com sucesso.", "sucesso");
 }
 
