@@ -23,7 +23,6 @@
       <ul class="menu">
         <li><a href="#cadastro">Nova atividade</a></li>
         <li><a href="#listagem">Minhas atividades</a></li>
-        <li><a href="#estados">Mensagens</a></li>
         <li><a href="#detalhes">Detalhes</a></li>
         <li><a href="#agenda">Google Agenda</a></li>
         <li><a href="pages/sobre.html">Sobre</a></li>
@@ -36,7 +35,9 @@
       <h2 id="titulo-cadastro">Cadastrar atividade</h2>
       <p>Campos marcados com * são obrigatórios.</p>
 
-      <form action="#" method="post">
+      <div id="cadastro-alerta" class="alerta oculto" role="alert" aria-live="assertive"></div>
+
+      <form id="form-cadastro" action="#" method="post" novalidate>
         <fieldset class="grade-campos">
           <legend>Dados da atividade</legend>
 
@@ -117,7 +118,7 @@
         </fieldset>
 
         <p class="acoes">
-          <button type="submit" class="btn btn--primario">Salvar atividade</button>
+          <button type="submit" id="btn-salvar" class="btn btn--primario">Salvar atividade</button>
           <button type="reset" class="btn btn--secundario">Limpar</button>
         </p>
       </form>
@@ -168,9 +169,11 @@
         </p>
       </form>
 
+      <div id="listagem-alerta" class="alerta oculto" role="status" aria-live="polite"></div>
+
       <div class="tabela-wrapper">
       <table>
-        <caption>Lista de atividades cadastradas (dados de exemplo)</caption>
+        <caption>Lista de atividades cadastradas</caption>
         <thead>
           <tr>
             <th scope="col">Título</th><th scope="col">Autor</th><th scope="col">Categoria</th>
@@ -178,96 +181,15 @@
             <th scope="col">Prioridade</th><th scope="col">Formato</th><th scope="col">Ações</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Prova de Matemática</th>
-            <td>Prof. Carlos Lima</td><td>Prova</td><td>2026</td><td>15/10/2026</td>
-            <td><span class="badge badge--pendente">Pendente</span></td>
-            <td><span class="badge badge--alta">Alta</span></td>
-            <td>Presencial</td>
-            <td>
-              <div class="acoes-linha">
-                <a href="#detalhes" class="link-acao">Ver detalhes</a>
-                <button type="button" class="btn btn--sm btn--outline">Editar</button>
-                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">Relatório de Química</th>
-            <td>Profa. Marina Souza</td><td>Trabalho</td><td>2026</td><td>20/10/2026</td>
-            <td><span class="badge badge--andamento">Em andamento</span></td>
-            <td><span class="badge badge--media">Média</span></td>
-            <td>Entrega digital</td>
-            <td>
-              <div class="acoes-linha">
-                <a href="#detalhes" class="link-acao">Ver detalhes</a>
-                <button type="button" class="btn btn--sm btn--outline">Editar</button>
-                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">Leitura de Dom Casmurro</th>
-            <td>Profa. Helena Alves</td><td>Estudo</td><td>2026</td><td>30/10/2026</td>
-            <td><span class="badge badge--pendente">Pendente</span></td>
-            <td><span class="badge badge--baixa">Baixa</span></td>
-            <td>Online</td>
-            <td>
-              <div class="acoes-linha">
-                <a href="#detalhes" class="link-acao">Ver detalhes</a>
-                <button type="button" class="btn btn--sm btn--outline">Editar</button>
-                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">Feira de Ciências</th>
-            <td>Coordenação Pedagógica</td><td>Evento escolar</td><td>2026</td><td>05/11/2026</td>
-            <td><span class="badge badge--pendente">Pendente</span></td>
-            <td><span class="badge badge--alta">Alta</span></td>
-            <td>Presencial</td>
-            <td>
-              <div class="acoes-linha">
-                <a href="#detalhes" class="link-acao">Ver detalhes</a>
-                <button type="button" class="btn btn--sm btn--outline">Editar</button>
-                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">Seminário de História</th>
-            <td>Prof. Rogério Dias</td><td>Trabalho</td><td>2026</td><td>10/09/2026</td>
-            <td><span class="badge badge--concluida">Concluída</span></td>
-            <td><span class="badge badge--media">Média</span></td>
-            <td>Presencial</td>
-            <td>
-              <div class="acoes-linha">
-                <a href="#detalhes" class="link-acao">Ver detalhes</a>
-                <button type="button" class="btn btn--sm btn--outline">Editar</button>
-                <button type="button" class="btn btn--sm btn--perigo">Excluir</button>
-              </div>
-            </td>
-          </tr>
+        <tbody id="corpo-lista">
         </tbody>
         <tfoot>
-          <tr><td colspan="9">Total: 5 atividades</td></tr>
+          <tr><td colspan="9">Total: <span id="total-atividades">0</span> atividade(s)</td></tr>
         </tfoot>
       </table>
       </div>
-    </section>
 
-    <section id="estados" aria-labelledby="titulo-estados">
-      <h2 id="titulo-estados">Mensagens do sistema</h2>
-      <p>Exemplos visuais dos estados que o sistema poderá exibir após a integração com JavaScript (próxima etapa).</p>
-
-      <div class="alerta alerta--sucesso" role="status">Atividade salva com sucesso.</div>
-      <div class="alerta alerta--erro" role="alert">Não foi possível salvar. Verifique os campos obrigatórios.</div>
-      <div class="alerta alerta--info" role="status">Carregando atividades…</div>
-      <p class="estado-vazio">Nenhuma atividade encontrada para os filtros selecionados.</p>
-      <p class="acoes">
-        <button type="button" class="btn btn--secundario" disabled>Ação indisponível (exemplo de botão desabilitado)</button>
-      </p>
+      <p id="lista-vazia" class="estado-vazio oculto">Nenhuma atividade encontrada para os filtros selecionados.</p>
     </section>
 
     <section id="detalhes" aria-labelledby="titulo-detalhes">
@@ -324,9 +246,10 @@
   </aside>
 
   <footer>
-    <p>&copy; 2026 OtterNote — Projeto acadêmico, Etapa 2 (CSS, layout e responsividade).</p>
+    <p>&copy; 2026 OtterNote — Projeto acadêmico, Etapa 3 (JavaScript, dados e interatividade).</p>
   </footer>
 
-  <script src="assets/js/script.js"></script>
+  <script defer src="assets/js/ui.js"></script>
+  <script defer src="assets/js/app.js"></script>
 </body>
 </html>

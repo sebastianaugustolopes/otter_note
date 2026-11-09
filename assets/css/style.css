@@ -631,3 +631,25 @@ body > footer {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* =========================================================
+   Etapa 3: JavaScript, dados e interatividade
+   ========================================================= */
+
+.oculto {
+  display: none !important;
+}
+
+.campo-erro {
+  border-color: var(--cor-perigo) !important;
+  background: var(--cor-perigo-clara);
+}
+
+.campo-erro:focus-visible {
+  box-shadow: 0 0 0 3px rgba(140, 29, 23, 0.25);
+}
+
+#listagem-alerta,
+#cadastro-alerta {
+  margin-bottom: var(--espaco-4);
+}
